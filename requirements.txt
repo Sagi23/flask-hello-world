@@ -1,3 +1,4 @@
 Flask==2.2.2
 Flask-Cors==3.0.8
 requests==2.27.1
+Gunicorn
