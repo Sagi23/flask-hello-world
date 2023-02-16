@@ -102,7 +102,7 @@ def jira_jql_severity(project_id, severity, auth):
 
 
     # Send the API request
-    response = requests.get(f'{BASE_URL}/search/?jql=project={project_id}&startAt={(page - 1) * ITEMS_PER_PAGE}&maxResults={ITEMS_PER_PAGE}', headers=headers)
+    response = requests.get(f'{BASE_URL}/search/?jql=project={project_id} {severity_filter}&startAt={(page - 1) * ITEMS_PER_PAGE}&maxResults={ITEMS_PER_PAGE}', headers=headers)
     string_data = response.content.decode("utf-8")
 
     total_issues = get_total_issues(f'project={project_id}', headers, BASE_URL, NO_RESULT_SEARCH)
