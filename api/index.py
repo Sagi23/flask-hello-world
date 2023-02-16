@@ -1,4 +1,3 @@
-import base64
 import requests
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
@@ -34,7 +33,6 @@ def login():
     auth = data['auth']
     print(auth)
     # auth = base64.b64encode(f'{username}:{password}'.encode('utf-8')).decode('utf-8')
-    app.auth = auth
 
     headers = {
         'Authorization': f'Basic {auth}',
@@ -90,7 +88,7 @@ def jira_jql_severity(project_id, severity, auth):
     # auth = base64.b64encode(b'sagi.twig:St123369').decode('utf-8')
     page = request.args.get('page', default=1, type=int)
 
-
+    severity_filter = f"AND severity={severity}" if severity != "All" else ""
 
     # Set the Authorization header
     headers = {
@@ -116,11 +114,11 @@ def jira_jql_severity(project_id, severity, auth):
 
 
 
-    total_issues_open = get_total_issues(f'project={project_id} {(f"AND severity={severity}" if severity != "All" else "")} AND status="open"', headers, BASE_URL, NO_RESULT_SEARCH)
-    total_issues_closed = get_total_issues(f'project={project_id} {(f"AND severity={severity}" if severity != "All" else "")}  AND status="closed"', headers, BASE_URL, NO_RESULT_SEARCH)
-    total_issues_reopened = get_total_issues(f'project={project_id} {(f"AND severity={severity}" if severity != "All" else "")}  AND status="reopened"', headers, BASE_URL, NO_RESULT_SEARCH)
-    total_issues_in_progress = get_total_issues(f'project={project_id} {(f"AND severity={severity}" if severity != "All" else "")}  AND status="in progress"', headers, BASE_URL, NO_RESULT_SEARCH)
-    total_issues_customer_approval = get_total_issues(f'project={project_id} {(f"AND severity={severity}" if severity != "All" else "")}  AND status="customer approval"', headers, BASE_URL, NO_RESULT_SEARCH)
+    total_issues_open = get_total_issues(f'project={project_id} {severity_filter} AND status="open"', headers, BASE_URL, NO_RESULT_SEARCH)
+    total_issues_closed = get_total_issues(f'project={project_id} {severity_filter} AND status="closed"', headers, BASE_URL, NO_RESULT_SEARCH)
+    total_issues_reopened = get_total_issues(f'project={project_id} {severity_filter} AND status="reopened"', headers, BASE_URL, NO_RESULT_SEARCH)
+    total_issues_in_progress = get_total_issues(f'project={project_id} {severity_filter} AND status="in progress"', headers, BASE_URL, NO_RESULT_SEARCH)
+    total_issues_customer_approval = get_total_issues(f'project={project_id} {severity_filter} AND status="customer approval"', headers, BASE_URL, NO_RESULT_SEARCH)
 
 
     json_data = json.loads(string_data)
@@ -177,4 +175,3 @@ def jira_jql_severity(project_id, severity, auth):
     
 if __name__ == '__main__':
     app.run()
-    app
